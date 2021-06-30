@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-//@ErrorHandler
+@ErrorHandler
 class ChaveController(@Inject val chavePixService: ChavePixService): DesafioPixServiceGrpc.DesafioPixServiceImplBase() {
 
     private val logger = LoggerFactory.getLogger(ChaveController::class.java)
