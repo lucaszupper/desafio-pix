@@ -1,4 +1,4 @@
-package br.com.zup.pix.compartilhado
+package br.com.zup.pix.chavepix
 
 
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator

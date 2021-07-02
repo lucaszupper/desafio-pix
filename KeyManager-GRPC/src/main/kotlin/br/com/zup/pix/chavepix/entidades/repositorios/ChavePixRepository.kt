@@ -1,6 +1,6 @@
-package br.com.zup.pix.entidades.repositorios
+package br.com.zup.pix.chavepix.entidades.repositorios
 
-import br.com.zup.pix.entidades.ChavePix
+import br.com.zup.pix.chavepix.entidades.ChavePix
 import io.micronaut.data.annotation.Repository
 import io.micronaut.data.jpa.repository.JpaRepository
 import java.util.*
@@ -9,6 +9,7 @@ import java.util.*
 interface ChavePixRepository : JpaRepository<ChavePix, UUID>{
 
     fun findByChave(chave: String): Optional<ChavePix>
+    fun findByIdAndCodigoCliente(id: UUID, codigoCliente: UUID): Optional<ChavePix>
 
 
 }

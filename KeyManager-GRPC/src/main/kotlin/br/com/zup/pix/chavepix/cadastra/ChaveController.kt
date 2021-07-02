@@ -1,15 +1,11 @@
-package br.com.zup.pix.cadastrachavepix
+package br.com.zup.pix.chavepix.cadastra
 
 import br.com.zup.pix.ChavePixRequest
 import br.com.zup.pix.ChavePixResponse
-import br.com.zup.pix.DesafioPixServiceGrpc
+import br.com.zup.pix.KeyManagerCadastraGrpcServiceGrpc
 import br.com.zup.pix.compartilhado.handlers.ErrorHandler
-import br.com.zup.pix.services.ChavePixService
-import io.grpc.Status
+import br.com.zup.pix.chavepix.services.ChavePixService
 import io.grpc.stub.StreamObserver
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
-import io.micronaut.http.annotation.Controller
 import org.slf4j.LoggerFactory
 
 import javax.inject.Inject
@@ -17,7 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 @ErrorHandler
-class ChaveController(@Inject val chavePixService: ChavePixService): DesafioPixServiceGrpc.DesafioPixServiceImplBase() {
+class ChaveController(@Inject val chavePixService: ChavePixService): KeyManagerCadastraGrpcServiceGrpc.KeyManagerCadastraGrpcServiceImplBase() {
 
     private val logger = LoggerFactory.getLogger(ChaveController::class.java)
 

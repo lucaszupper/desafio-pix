@@ -1,8 +1,7 @@
-package br.com.zup.pix.entidades
+package br.com.zup.pix.chavepix.entidades
 
-import br.com.zup.pix.compartilhado.TipoDeChave
-import br.com.zup.pix.compartilhado.TipoDeConta
-import org.junit.jupiter.api.Test
+import br.com.zup.pix.chavepix.TipoDeChave
+import br.com.zup.pix.chavepix.TipoDeConta
 import java.util.*
 
 internal class ChavePixTest {
@@ -15,7 +14,7 @@ internal class ChavePixTest {
         tipoDeChave: TipoDeChave,
         chave: String = UUID.randomUUID().toString(),
         clienteId: UUID =  UUID.randomUUID()
-    ) : ChavePix{
+    ) : ChavePix {
         return ChavePix(
             codigoCliente = clienteId,
             tipoDeChave = tipoDeChave,

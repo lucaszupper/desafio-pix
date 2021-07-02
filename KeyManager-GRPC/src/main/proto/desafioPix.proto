@@ -7,9 +7,21 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.pix;
 
-service DesafioPixService {
+service KeyManagerCadastraGrpcService {
 
   rpc cadastraChave(ChavePixRequest) returns (ChavePixResponse) {}
+}
+service KeyManagerRemoveGrpcService {
+  rpc removeChave(RemoveChaveRequest) returns (RemoveChaveResponse){}
+
+}
+
+message RemoveChaveRequest {
+  string clientId = 1;
+  string chaveId = 2;
+}
+message RemoveChaveResponse {
+  string responseMessage = 1;
 }
 
 enum TipoDeChave {

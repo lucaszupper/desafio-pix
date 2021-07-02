@@ -1,10 +1,10 @@
-package br.com.zup.pix.cadastrachavepix
+package br.com.zup.pix.chavepix.cadastra
 
 
 import br.com.zup.pix.ChavePixRequest
 
-import br.com.zup.pix.compartilhado.TipoDeChave
-import br.com.zup.pix.compartilhado.TipoDeConta
+import br.com.zup.pix.chavepix.TipoDeChave
+import br.com.zup.pix.chavepix.TipoDeConta
 
 fun ChavePixRequest.toModel(): ChavePixDto {
     return ChavePixDto(

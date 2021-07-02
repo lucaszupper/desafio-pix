@@ -1,11 +1,11 @@
-package br.com.zup.pix.cadastrachavepix
+package br.com.zup.pix.chavepix.cadastra
 
 
-import br.com.zup.pix.compartilhado.TipoDeChave
-import br.com.zup.pix.compartilhado.TipoDeConta
+import br.com.zup.pix.chavepix.TipoDeChave
+import br.com.zup.pix.chavepix.TipoDeConta
 import br.com.zup.pix.compartilhado.validacao.ValidUUID
 import br.com.zup.pix.compartilhado.validacao.ValidaChavePix
-import br.com.zup.pix.entidades.ChavePix
+import br.com.zup.pix.chavepix.entidades.ChavePix
 import io.micronaut.core.annotation.Introspected
 import java.util.*
 import javax.validation.constraints.NotBlank

@@ -1,21 +1,20 @@
 package br.com.zup.pix.cadastrachave
 
 import br.com.zup.pix.ChavePixRequest
-import br.com.zup.pix.DesafioPixServiceGrpc
+import br.com.zup.pix.KeyManagerCadastraGrpcServiceGrpc
 import br.com.zup.pix.TipoDeChave
 import br.com.zup.pix.cadastrachavepix.ConsultaCliente
 import br.com.zup.pix.cadastrachavepix.ConsultaContaResponse
 import br.com.zup.pix.cadastrachavepix.Instituicao
 import br.com.zup.pix.cadastrachavepix.Titular
-import br.com.zup.pix.compartilhado.TipoDeConta
+import br.com.zup.pix.chavepix.TipoDeConta
 import br.com.zup.pix.compartilhado.violations
-import br.com.zup.pix.entidades.ChavePix
-import br.com.zup.pix.entidades.repositorios.ChavePixRepository
+import br.com.zup.pix.chavepix.entidades.ChavePix
+import br.com.zup.pix.chavepix.entidades.repositorios.ChavePixRepository
 
 import io.grpc.ManagedChannel
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
-import io.grpc.stub.AbstractBlockingStub
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
@@ -40,7 +39,7 @@ import javax.inject.Inject
 @MicronautTest(transactional = false)
 internal class CadastraChavePixTest(
     val chavePixRepository: ChavePixRepository,
-    val grpcClient: DesafioPixServiceGrpc.DesafioPixServiceBlockingStub
+    val grpcClient: KeyManagerCadastraGrpcServiceGrpc.KeyManagerCadastraGrpcServiceBlockingStub
 
 ) {
     @Inject
@@ -125,9 +124,11 @@ internal class CadastraChavePixTest(
     }
     @Test
     fun `nao deve gerar chave duplicada - CPF`(){
-        chavePixRepository.save(ChavePix(
-            CLIENT_ID, br.com.zup.pix.compartilhado.TipoDeChave.CPF, "26951023050", TipoDeConta.CONTA_CORRENTE
-        ))
+        chavePixRepository.save(
+            ChavePix(
+            CLIENT_ID, br.com.zup.pix.chavepix.TipoDeChave.CPF, "26951023050", TipoDeConta.CONTA_CORRENTE
+        )
+        )
 
         val erro = assertThrows<StatusRuntimeException> {
             grpcClient.cadastraChave(ChavePixRequest.newBuilder()
@@ -275,8 +276,8 @@ internal class CadastraChavePixTest(
     @Factory
     class Clients {
     @Bean
-        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): DesafioPixServiceGrpc.DesafioPixServiceBlockingStub? {
-            return DesafioPixServiceGrpc.newBlockingStub(channel)
+        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): KeyManagerCadastraGrpcServiceGrpc.KeyManagerCadastraGrpcServiceBlockingStub? {
+            return KeyManagerCadastraGrpcServiceGrpc.newBlockingStub(channel)
 
         }
     }

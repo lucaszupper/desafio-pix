@@ -1,14 +1,13 @@
-package br.com.zup.pix.services
+package br.com.zup.pix.chavepix.services
 
-import br.com.zup.pix.cadastrachavepix.ChavePixDto
+import br.com.zup.pix.chavepix.cadastra.ChavePixDto
 import br.com.zup.pix.cadastrachavepix.ConsultaCliente
 import br.com.zup.pix.compartilhado.handlers.errors.ChavePixExistenteException
-import br.com.zup.pix.entidades.ChavePix
-import br.com.zup.pix.entidades.repositorios.ChavePixRepository
+import br.com.zup.pix.chavepix.entidades.ChavePix
+import br.com.zup.pix.chavepix.entidades.repositorios.ChavePixRepository
 import io.micronaut.http.HttpStatus
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.transaction.Transactional

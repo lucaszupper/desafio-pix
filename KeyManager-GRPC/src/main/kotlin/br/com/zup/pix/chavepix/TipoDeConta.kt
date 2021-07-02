@@ -1,4 +1,4 @@
-package br.com.zup.pix.compartilhado
+package br.com.zup.pix.chavepix
 
 enum class TipoDeConta {
     CONTA_CORRENTE,

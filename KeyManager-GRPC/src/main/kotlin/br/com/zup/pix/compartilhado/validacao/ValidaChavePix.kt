@@ -1,6 +1,6 @@
 package br.com.zup.pix.compartilhado.validacao
 
-import br.com.zup.pix.cadastrachavepix.ChavePixDto
+import br.com.zup.pix.chavepix.cadastra.ChavePixDto
 import javax.inject.Singleton
 import javax.validation.Constraint
 import javax.validation.ConstraintValidator

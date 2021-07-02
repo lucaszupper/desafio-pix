@@ -1,8 +1,7 @@
-package br.com.zup.pix.entidades
+package br.com.zup.pix.chavepix.entidades
 
-import br.com.zup.pix.compartilhado.TipoDeChave
-import br.com.zup.pix.compartilhado.TipoDeConta
-import java.time.LocalDateTime
+import br.com.zup.pix.chavepix.TipoDeChave
+import br.com.zup.pix.chavepix.TipoDeConta
 import java.util.*
 import javax.persistence.*
 
