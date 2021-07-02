@@ -1,4 +1,6 @@
 import com.google.protobuf.gradle.*
+
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.32"
     id("org.jetbrains.kotlin.kapt") version "1.4.32"
@@ -15,6 +17,7 @@ group = "br.com.zup.pix"
 val kotlinVersion=project.properties.get("kotlinVersion")
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 micronaut {
@@ -50,6 +53,14 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:testcontainers")
+
+    //testes
+
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
+    testImplementation("com.h2database:h2")
+    testImplementation("org.hamcrest:hamcrest-core:2.2")
+    testImplementation("org.testcontainers:junit-jupiter")
 
 }
 

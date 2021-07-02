@@ -1,7 +1,7 @@
 package br.com.zup.pix.compartilhado.handlers.errors
 
 import br.com.zup.pix.compartilhado.handlers.ExceptionHandler
-import br.com.zup.pix.compartilhado.handlers.StatusWithDetails
+
 import com.google.protobuf.Any
 import com.google.rpc.BadRequest
 import com.google.rpc.Code
@@ -11,7 +11,7 @@ import javax.validation.ConstraintViolationException
 @Singleton
 class ConstraintViolationExceptionHandler : ExceptionHandler<ConstraintViolationException> {
 
-    override fun handle(e: ConstraintViolationException): StatusWithDetails {
+    override fun handle(e: ConstraintViolationException): ExceptionHandler.StatusWithDetails {
 
         val details = BadRequest.newBuilder()
             .addAllFieldViolations(e.constraintViolations.map {
@@ -28,7 +28,7 @@ class ConstraintViolationExceptionHandler : ExceptionHandler<ConstraintViolation
             .addDetails(Any.pack(details))
             .build()
 
-        return StatusWithDetails(statusProto)
+        return ExceptionHandler.StatusWithDetails(statusProto)
     }
 
     override fun supports(e: Exception): Boolean {

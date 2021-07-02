@@ -15,7 +15,7 @@ import javax.validation.constraints.Size
 @Introspected
 @ValidaChavePix
 data class ChavePixDto(
-    @ValidUUID
+    @field:ValidUUID
     @field:NotBlank
     val codigoInterno: String,
     @field:NotNull

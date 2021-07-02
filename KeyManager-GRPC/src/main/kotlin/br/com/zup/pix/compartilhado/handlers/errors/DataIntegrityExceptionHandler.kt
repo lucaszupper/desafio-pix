@@ -1,6 +1,6 @@
 package br.com.zup.pix.compartilhado.handlers.errors
 import br.com.zup.pix.compartilhado.handlers.ExceptionHandler
-import br.com.zup.pix.compartilhado.handlers.StatusWithDetails
+
 import io.grpc.Status
 import io.micronaut.context.MessageSource
 import io.micronaut.context.MessageSource.MessageContext
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class DataIntegrityExceptionHandler(@Inject var messageSource: MessageSource) :
     ExceptionHandler<ConstraintViolationException> {
 
-    override fun handle(e: ConstraintViolationException): StatusWithDetails {
+    override fun handle(e: ConstraintViolationException): ExceptionHandler.StatusWithDetails {
 
         val constraintName = e.constraintName
         if (constraintName.isNullOrBlank()) {
@@ -29,12 +29,16 @@ class DataIntegrityExceptionHandler(@Inject var messageSource: MessageSource) :
     }
 
     private fun alreadyExistsError(message: String?, e: ConstraintViolationException) =
-        StatusWithDetails(Status.ALREADY_EXISTS
-            .withDescription(message)
-            .withCause(e))
+        ExceptionHandler.StatusWithDetails(
+            Status.ALREADY_EXISTS
+                .withDescription(message)
+                .withCause(e)
+        )
 
     private fun internalServerError(e: ConstraintViolationException) =
-        StatusWithDetails(Status.INTERNAL
-            .withDescription("Unexpected internal server error")
-            .withCause(e))
+        ExceptionHandler.StatusWithDetails(
+            Status.INTERNAL
+                .withDescription("Unexpected internal server error")
+                .withCause(e)
+        )
 }

@@ -27,10 +27,9 @@ class ValidaChavePixValidator: javax.validation.ConstraintValidator<ValidaChaveP
         if (value?.tipoDeChave == null) {
             return true
         }
-        println("antes do valid")
-        println(value)
+
         val valid = value.tipoDeChave.valida(value.valorDaChave)
-        println("apos valid")
+
         if (!valid) {
 
             context.disableDefaultConstraintViolation()

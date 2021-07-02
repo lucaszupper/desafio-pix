@@ -11,13 +11,13 @@ interface ExceptionHandler<in E: Exception> {
 
     fun supports(e: Exception): Boolean
 
+    data class StatusWithDetails(val status: Status, val metadata: Metadata = Metadata()) {
+        constructor(se: StatusRuntimeException): this(se.status, se.trailers ?: Metadata())
+        constructor(sp: com.google.rpc.Status): this(StatusProto.toStatusRuntimeException(sp))
 
-}
-data class StatusWithDetails(val status: Status, val metadata: Metadata = Metadata()) {
-    constructor(se: StatusRuntimeException): this(se.status, se.trailers ?: Metadata())
-    constructor(sp: com.google.rpc.Status): this(StatusProto.toStatusRuntimeException(sp))
-
-    fun asRuntimeException(): StatusRuntimeException {
-        return status.asRuntimeException(metadata)
+        fun asRuntimeException(): StatusRuntimeException {
+            return status.asRuntimeException(metadata)
+        }
     }
 }
+

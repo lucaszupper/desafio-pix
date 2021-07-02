@@ -36,9 +36,9 @@ class ChavePixService (@Inject val chavePixRepository: ChavePixRepository,
         if (responseItau.status.equals(HttpStatus.NOT_FOUND)){
             throw IllegalStateException("Cliente nao encontrado no banco de dados")
         }
-        println("antes de gravar")
+
         val chavePix = chavePixRepository.save(chavePixDto.toModel())
-        print("apos gravar")
+
 
         return chavePix
 
