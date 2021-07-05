@@ -10,7 +10,9 @@ import br.com.zup.pix.cadastrachavepix.Titular
 import br.com.zup.pix.chavepix.TipoDeConta
 import br.com.zup.pix.compartilhado.violations
 import br.com.zup.pix.chavepix.entidades.ChavePix
+import br.com.zup.pix.chavepix.entidades.DadosBancarios
 import br.com.zup.pix.chavepix.entidades.repositorios.ChavePixRepository
+import br.com.zup.pix.chavepix.services.*
 
 import io.grpc.ManagedChannel
 import io.grpc.Status
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -42,6 +45,10 @@ internal class CadastraChavePixTest(
     val grpcClient: KeyManagerCadastraGrpcServiceGrpc.KeyManagerCadastraGrpcServiceBlockingStub
 
 ) {
+
+    @Inject
+    lateinit var clientBCB: ClientBCB
+
     @Inject
     lateinit var consultaCliente: ConsultaCliente
 
@@ -60,10 +67,13 @@ internal class CadastraChavePixTest(
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
 
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.EMAIL)))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.EMAIL)))
+
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
             .setTipoDeChave(TipoDeChave.EMAIL)
-            .setValorDaChave("lucas@email.com")
+            .setValorDaChave("teste@email.com.br")
             .setTipoDeConta(br.com.zup.pix.TipoDeConta.CONTA_CORRENTE)
             .build())
 
@@ -72,10 +82,14 @@ internal class CadastraChavePixTest(
             assertNotNull(chaveId)
         }
     }
+
     @Test
     fun `deve cadastrar uma chave pix - CPF`() {
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
+
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.CPF)))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.CPF)))
 
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
@@ -94,6 +108,10 @@ internal class CadastraChavePixTest(
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
 
+
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.PHONE)))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.PHONE)))
+
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
             .setTipoDeChave(TipoDeChave.TELEFONE)
@@ -111,6 +129,9 @@ internal class CadastraChavePixTest(
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
 
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.RANDOM)))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.RANDOM)))
+
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
             .setTipoDeChave(TipoDeChave.ALEATORIA)
@@ -125,10 +146,9 @@ internal class CadastraChavePixTest(
     @Test
     fun `nao deve gerar chave duplicada - CPF`(){
         chavePixRepository.save(
-            ChavePix(
-            CLIENT_ID, br.com.zup.pix.chavepix.TipoDeChave.CPF, "26951023050", TipoDeConta.CONTA_CORRENTE
-        )
-        )
+            chave(
+            tipoDeChave = br.com.zup.pix.chavepix.TipoDeChave.CPF,chave = "26951023050", clientId = CLIENT_ID
+        ))
 
         val erro = assertThrows<StatusRuntimeException> {
             grpcClient.cadastraChave(ChavePixRequest.newBuilder()
@@ -234,7 +254,7 @@ internal class CadastraChavePixTest(
                 .build())
         }
 
-        // validação
+
         with(erro) {
             assertEquals(Status.INVALID_ARGUMENT.code, status.code)
             assertEquals("Dados inválidos", status.description)
@@ -255,7 +275,7 @@ internal class CadastraChavePixTest(
                 .build())
         }
 
-        // validação
+
         with(erro) {
             assertEquals(Status.INVALID_ARGUMENT.code, status.code)
             assertEquals("Dados inválidos", status.description)
@@ -265,12 +285,36 @@ internal class CadastraChavePixTest(
         }
     }
 
+    @Test
+    fun `nao deve gerar chave quando nao conseguir comunicar com o banco central`(){
+        `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
+            .thenReturn(HttpResponse.ok(itauResponse()))
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.EMAIL)))
+            .thenReturn(HttpResponse.badRequest())
 
+        val erro = assertThrows<StatusRuntimeException> {
+            grpcClient.cadastraChave(ChavePixRequest.newBuilder()
+                .setCodigoInterno(CLIENT_ID.toString())
+                .setTipoDeChave(TipoDeChave.EMAIL)
+                .setValorDaChave("teste@email.com.br")
+                .setTipoDeConta(br.com.zup.pix.TipoDeConta.CONTA_CORRENTE)
+                .build())
+        }
+        with(erro){
+            assertEquals(Status.FAILED_PRECONDITION.code, status.code)
+            assertEquals("nao foi possivel comunicar com o banco central", status.description)
+        }
+    }
 
 
     @MockBean(ConsultaCliente::class)
     fun consultaClienteItau(): ConsultaCliente? {
         return Mockito.mock(ConsultaCliente::class.java)
+    }
+
+    @MockBean(ClientBCB::class)
+    fun clientBCB(): ClientBCB? {
+        return Mockito.mock(ClientBCB::class.java)
     }
 
     @Factory
@@ -282,13 +326,74 @@ internal class CadastraChavePixTest(
         }
     }
 
+
     private fun itauResponse (): ConsultaContaResponse {
         return ConsultaContaResponse(
         tipo = "CONTA_CORRENTE",
-        instituicao = Instituicao(nome = "ITAU", ispb = "teste" ),
+        instituicao = Instituicao(nome = "ITAU", ispb = DadosBancarios.ITAU_ISPB ),
         agencia = "1234",
         numero = "654321",
-        titular = Titular("","Lucas Rodrigues", "26951023050")
+        titular = Titular("Lucas Rodrigues", "26951023050")
+        )
+    }
+
+    private fun criaBcbCadastraRequest(tipodeChave: BcbTipodeChave): BcbCadastraChaveRequest{
+        return BcbCadastraChaveRequest(
+            keyType = tipodeChave,
+            key = "teste@email.com.br",
+            bankAccount = criaBcbContaBancaria(),
+            owner = criaBcbProprietario()
+        )
+    }
+    private fun criaBcbCadastraResponse(tipodeChave: BcbTipodeChave): BcbCadastraChaveResponse{
+        return BcbCadastraChaveResponse(
+            keyType = tipodeChave,
+            key = "teste@email.com.br",
+            bankAccount = criaBcbContaBancaria(),
+            owner = criaBcbProprietario(),
+            createdAt = LocalDateTime.now()
+
+        )
+    }
+
+    private fun criaBcbProprietario(): BcbProprietario {
+        return BcbProprietario(
+            type = BcbProprietario.BcbTipoProprietario.NATURAL_PERSON,
+            name = "Zup Edu",
+            taxIdNumber = "26951023050"
+
+        )
+    }
+
+    private fun criaBcbContaBancaria(): BcbContaBancaria {
+        return BcbContaBancaria(
+            participant = DadosBancarios.ITAU_ISPB,
+            branch = "1234",
+            accountNumber = "123456",
+            accountType = BcbTipoDeConta.CACC
+        )
+
+
+    }
+
+    private fun chave(
+        tipoDeChave: br.com.zup.pix.chavepix.TipoDeChave,
+        chave: String = UUID.randomUUID().toString(),
+        clientId: UUID = UUID.randomUUID()
+    ): ChavePix{
+        return ChavePix(
+            codigoCliente = clientId,
+            tipoDeChave = tipoDeChave,
+            chave = chave,
+            tipoDeConta = TipoDeConta.CONTA_CORRENTE,
+            conta = DadosBancarios(
+                instituicao = "ITAU",
+                titular = "Zup Edu",
+                cpf = "26951023050",
+                agencia = "1234",
+                numero = "123456"
+
+            )
         )
     }
 }

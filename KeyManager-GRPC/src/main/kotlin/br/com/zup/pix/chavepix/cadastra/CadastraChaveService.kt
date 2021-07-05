@@ -46,6 +46,7 @@ class CadastraChaveService (@Inject val chavePixRepository: ChavePixRepository,
         val chaveBcb = BcbCadastraChaveRequest.criaRequest(chavePix)
 
         val responseBcb = clientBCB.cadastra(chaveBcb)
+
         if(!responseBcb.status.equals(HttpStatus.CREATED)) {
             throw IllegalStateException("Não foi possível cadastrar chave no Banco Central")
         }

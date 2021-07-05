@@ -58,12 +58,12 @@ dependencies {
     runtime("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
+
+
     testImplementation("org.testcontainers:testcontainers")
 
     //testes
-
+    kaptTest( "io.micronaut:micronaut-inject-java")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
     testImplementation("com.h2database:h2")

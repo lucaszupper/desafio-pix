@@ -35,7 +35,6 @@ data class ConsultaContaResponse(
 }
 
 data class Titular(
-    val id: String,
     val nome: String,
     val cpf: String
 ) {
