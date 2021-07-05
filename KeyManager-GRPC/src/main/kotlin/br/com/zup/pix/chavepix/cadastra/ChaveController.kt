@@ -4,7 +4,6 @@ import br.com.zup.pix.ChavePixRequest
 import br.com.zup.pix.ChavePixResponse
 import br.com.zup.pix.KeyManagerCadastraGrpcServiceGrpc
 import br.com.zup.pix.compartilhado.handlers.ErrorHandler
-import br.com.zup.pix.chavepix.services.ChavePixService
 import io.grpc.stub.StreamObserver
 import org.slf4j.LoggerFactory
 
@@ -13,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 @ErrorHandler
-class ChaveController(@Inject val chavePixService: ChavePixService): KeyManagerCadastraGrpcServiceGrpc.KeyManagerCadastraGrpcServiceImplBase() {
+class ChaveController(@Inject val cadastraChaveService: CadastraChaveService): KeyManagerCadastraGrpcServiceGrpc.KeyManagerCadastraGrpcServiceImplBase() {
 
     private val logger = LoggerFactory.getLogger(ChaveController::class.java)
 
@@ -21,7 +20,7 @@ class ChaveController(@Inject val chavePixService: ChavePixService): KeyManagerC
 
         val chaveDto = request?.toModel()
 
-        val chavePix = chavePixService.cadastraChavePix(chaveDto!!)
+        val chavePix = cadastraChaveService.cadastraChavePix(chaveDto!!)
 
         responseObserver?.onNext(ChavePixResponse.newBuilder()
             .setClientId(chavePix.codigoCliente.toString())

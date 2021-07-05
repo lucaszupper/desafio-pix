@@ -13,16 +13,21 @@ class ChavePix(
     @Enumerated(EnumType.STRING)
     val tipoDeChave: TipoDeChave,
     @Column(unique = true, nullable = false)
-    val chave: String,
+    var chave: String,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val tipoDeConta: TipoDeConta
+    val tipoDeConta: TipoDeConta,
 
+    @Embedded
+    val conta: DadosBancarios
 ) {
     @Id
     @GeneratedValue
     val id: UUID?= null
     val LocalDateTime = java.time.LocalDateTime.now()
 
+    fun chaveAleatoria(): Boolean{
+        return  tipoDeChave == TipoDeChave.ALEATORIA
+    }
 
 }

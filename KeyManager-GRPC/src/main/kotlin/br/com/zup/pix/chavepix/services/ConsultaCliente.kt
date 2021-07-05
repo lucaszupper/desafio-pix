@@ -1,5 +1,6 @@
 package br.com.zup.pix.cadastrachavepix
 
+import br.com.zup.pix.chavepix.entidades.DadosBancarios
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
@@ -22,7 +23,15 @@ data class ConsultaContaResponse(
     val numero: String,
     val titular: Titular
 ) {
-
+    fun toModel(): DadosBancarios{
+        return DadosBancarios(
+            instituicao = instituicao.nome,
+            titular = titular.nome,
+            cpf = titular.cpf,
+            agencia= agencia,
+            numero = numero
+        )
+    }
 }
 
 data class Titular(

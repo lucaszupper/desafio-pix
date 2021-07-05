@@ -6,6 +6,7 @@ import br.com.zup.pix.chavepix.TipoDeConta
 import br.com.zup.pix.compartilhado.validacao.ValidUUID
 import br.com.zup.pix.compartilhado.validacao.ValidaChavePix
 import br.com.zup.pix.chavepix.entidades.ChavePix
+import br.com.zup.pix.chavepix.entidades.DadosBancarios
 import io.micronaut.core.annotation.Introspected
 import java.util.*
 import javax.validation.constraints.NotBlank
@@ -26,7 +27,7 @@ data class ChavePixDto(
     val tipoDeConta: TipoDeConta?
 ) {
 
-    fun toModel(): ChavePix {
+    fun toModel(conta: DadosBancarios): ChavePix {
         return ChavePix(
             codigoCliente = UUID.fromString(this.codigoInterno),
             tipoDeChave = tipoDeChave!!,
@@ -35,7 +36,8 @@ data class ChavePixDto(
             } else {
                 this.valorDaChave
             },
-            tipoDeConta = tipoDeConta!!
+            tipoDeConta = tipoDeConta!!,
+            conta = conta
         )
 
 
