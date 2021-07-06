@@ -67,8 +67,8 @@ internal class CadastraChavePixTest(
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
 
-        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.EMAIL)))
-            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.EMAIL)))
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.EMAIL, chave = "teste@email.com.br")))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.EMAIL,  chave = "teste@email.com.br")))
 
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
@@ -88,8 +88,8 @@ internal class CadastraChavePixTest(
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
 
-        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.CPF)))
-            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.CPF)))
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.CPF,  chave = "26951023050")))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.CPF,  chave = "26951023050")))
 
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
@@ -109,8 +109,8 @@ internal class CadastraChavePixTest(
             .thenReturn(HttpResponse.ok(itauResponse()))
 
 
-        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.PHONE)))
-            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.PHONE)))
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.PHONE, chave = "+5584998506034" )))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.PHONE, chave = "+5584998506034")))
 
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
@@ -128,9 +128,10 @@ internal class CadastraChavePixTest(
     fun `deve cadastrar uma chave pix - ALEATORIA`() {
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
-
-        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.RANDOM)))
-            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.RANDOM)))
+        var chaveAleatoria = UUID.randomUUID().toString()
+        println(criaBcbCadastraRequest(BcbTipodeChave.RANDOM, chave = chaveAleatoria))
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.RANDOM, chave = "")))
+            .thenReturn(HttpResponse.created(criaBcbCadastraResponse(BcbTipodeChave.RANDOM, chave = chaveAleatoria)))
 
         val response = grpcClient.cadastraChave(ChavePixRequest.newBuilder()
             .setCodigoInterno(CLIENT_ID.toString())
@@ -289,7 +290,7 @@ internal class CadastraChavePixTest(
     fun `nao deve gerar chave quando nao conseguir comunicar com o banco central`(){
         `when`(consultaCliente.consultaConta(idCliente = CLIENT_ID.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(itauResponse()))
-        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.EMAIL)))
+        `when`(clientBCB.cadastra(criaBcbCadastraRequest(BcbTipodeChave.EMAIL, chave = "teste@email.com.br")))
             .thenReturn(HttpResponse.badRequest())
 
         val erro = assertThrows<StatusRuntimeException> {
@@ -302,7 +303,7 @@ internal class CadastraChavePixTest(
         }
         with(erro){
             assertEquals(Status.FAILED_PRECONDITION.code, status.code)
-            assertEquals("nao foi possivel comunicar com o banco central", status.description)
+            assertEquals("Não foi possível cadastrar chave no Banco Central", status.description)
         }
     }
 
@@ -333,22 +334,22 @@ internal class CadastraChavePixTest(
         instituicao = Instituicao(nome = "ITAU", ispb = DadosBancarios.ITAU_ISPB ),
         agencia = "1234",
         numero = "654321",
-        titular = Titular("Lucas Rodrigues", "26951023050")
+        titular = Titular("Zup Edu", "26951023050")
         )
     }
 
-    private fun criaBcbCadastraRequest(tipodeChave: BcbTipodeChave): BcbCadastraChaveRequest{
+    private fun criaBcbCadastraRequest(tipodeChave: BcbTipodeChave, chave: String): BcbCadastraChaveRequest{
         return BcbCadastraChaveRequest(
             keyType = tipodeChave,
-            key = "teste@email.com.br",
+            key = chave,
             bankAccount = criaBcbContaBancaria(),
             owner = criaBcbProprietario()
         )
     }
-    private fun criaBcbCadastraResponse(tipodeChave: BcbTipodeChave): BcbCadastraChaveResponse{
+    private fun criaBcbCadastraResponse(tipodeChave: BcbTipodeChave, chave: String): BcbCadastraChaveResponse{
         return BcbCadastraChaveResponse(
             keyType = tipodeChave,
-            key = "teste@email.com.br",
+            key = chave,
             bankAccount = criaBcbContaBancaria(),
             owner = criaBcbProprietario(),
             createdAt = LocalDateTime.now()
@@ -369,7 +370,7 @@ internal class CadastraChavePixTest(
         return BcbContaBancaria(
             participant = DadosBancarios.ITAU_ISPB,
             branch = "1234",
-            accountNumber = "123456",
+            accountNumber = "654321",
             accountType = BcbTipoDeConta.CACC
         )
 
@@ -391,7 +392,7 @@ internal class CadastraChavePixTest(
                 titular = "Zup Edu",
                 cpf = "26951023050",
                 agencia = "1234",
-                numero = "123456"
+                numero = "654321"
 
             )
         )

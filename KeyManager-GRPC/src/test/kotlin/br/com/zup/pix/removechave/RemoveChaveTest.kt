@@ -91,7 +91,7 @@ internal class RemoveChaveTest (
 
         with(erro){
             assertEquals(Status.FAILED_PRECONDITION.code, status.code)
-            assertEquals("Erro ao remover chave", status.description)
+            assertEquals("Falha ao excluir Chave no Banco Central", status.description)
         }
     }
 

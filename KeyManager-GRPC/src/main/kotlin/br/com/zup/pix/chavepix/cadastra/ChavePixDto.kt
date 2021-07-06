@@ -32,7 +32,7 @@ data class ChavePixDto(
             codigoCliente = UUID.fromString(this.codigoInterno),
             tipoDeChave = tipoDeChave!!,
             chave = if (this.tipoDeChave!!.equals(TipoDeChave.ALEATORIA)) {
-                UUID.randomUUID().toString()
+                ""//UUID.randomUUID().toString()
             } else {
                 this.valorDaChave
             },

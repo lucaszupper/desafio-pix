@@ -44,6 +44,7 @@ class CadastraChaveService (@Inject val chavePixRepository: ChavePixRepository,
         val chavePix = chavePixRepository.save(chavePixDto.toModel(dadosBancarios))
 
         val chaveBcb = BcbCadastraChaveRequest.criaRequest(chavePix)
+        logger.info(chaveBcb.toString())
 
         val responseBcb = clientBCB.cadastra(chaveBcb)
 
