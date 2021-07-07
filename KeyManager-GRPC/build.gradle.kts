@@ -62,7 +62,7 @@ dependencies {
 
     testImplementation("org.testcontainers:testcontainers")
 
-    //testes
+
     kaptTest( "io.micronaut:micronaut-inject-java")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")

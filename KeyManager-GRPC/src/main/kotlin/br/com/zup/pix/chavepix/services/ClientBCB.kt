@@ -6,10 +6,7 @@ import br.com.zup.pix.chavepix.entidades.ChavePix
 import br.com.zup.pix.chavepix.entidades.DadosBancarios
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Delete
-import io.micronaut.http.annotation.PathVariable
-import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.*
 import io.micronaut.http.client.annotation.Client
 import java.time.LocalDateTime
 
@@ -20,7 +17,20 @@ interface ClientBCB {
 
     @Delete("/api/v1/pix/keys/{key}", produces = arrayOf(MediaType.APPLICATION_XML), consumes = arrayOf(MediaType.APPLICATION_XML))
     fun exclui(@PathVariable key: String, @Body request: BcbExcluiChaveRequest): HttpResponse<BcbExcluiChaveResponse>
+
+    @Get("/api/v1/pix/keys/{key}", consumes = [MediaType.APPLICATION_XML])
+    fun buscaPorChave(@PathVariable key: String): HttpResponse<BcbChaveDetalhesResponse>
 }
+
+data class BcbChaveDetalhesResponse (
+    val keyType: BcbTipodeChave,
+    val key: String,
+    val bankAccount: BcbContaBancaria,
+    val owner: BcbProprietario,
+    val createdAt: LocalDateTime
+    )
+
+
 
 data class BcbCadastraChaveResponse(
     val keyType: BcbTipodeChave,
@@ -93,6 +103,12 @@ companion object{
             TipoDeConta.CONTA_POUPANCA -> SVGS
         }
     }
+    fun toTipoDeConta(bcbTipoDeConta: BcbTipoDeConta): TipoDeConta{
+        return when(bcbTipoDeConta){
+            CACC -> TipoDeConta.CONTA_CORRENTE
+            SVGS -> TipoDeConta.CONTA_POUPANCA
+        }
+    }
 
 }
 
@@ -111,6 +127,14 @@ enum class BcbTipodeChave {
                 TipoDeChave.TELEFONE -> PHONE
                 TipoDeChave.EMAIL -> EMAIL
                 TipoDeChave.ALEATORIA -> RANDOM
+            }
+        }
+        fun toTipoDeChave(bcbTipodeChave: BcbTipodeChave): TipoDeChave{
+            return when(bcbTipodeChave){
+                CPF -> TipoDeChave.CPF
+                PHONE -> TipoDeChave.TELEFONE
+                EMAIL -> TipoDeChave.EMAIL
+                RANDOM -> TipoDeChave.ALEATORIA
             }
         }
     }

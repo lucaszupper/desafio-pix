@@ -24,7 +24,7 @@ class ChavePix(
     @Id
     @GeneratedValue
     val id: UUID?= null
-    val LocalDateTime = java.time.LocalDateTime.now()
+    val resgistradaEm = java.time.LocalDateTime.now()
 
     fun chaveAleatoria(): Boolean{
         return  tipoDeChave == TipoDeChave.ALEATORIA
