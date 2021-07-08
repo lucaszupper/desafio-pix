@@ -47,8 +47,8 @@ data class DadosConsultaChave(
 data class DadosConsultaPix(
     @field:NotNull
     override val tipoConsulta: TipoConsulta,
-    @field:NotNull @field:NotBlank @ValidUUID
+    @field:NotNull @field:NotBlank @field:ValidUUID
     val clientId: String,
-    @field:NotNull @field:NotBlank @ValidUUID
+    @field:NotNull @field:NotBlank @field:ValidUUID
     val pixId: String
 ): DadosConsulta(tipoConsulta )
