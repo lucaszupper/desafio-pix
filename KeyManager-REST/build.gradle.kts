@@ -49,6 +49,8 @@ dependencies {
     implementation("io.swagger.core.v3:swagger-annotations")
 
     implementation("io.micronaut:micronaut-management")
+    testImplementation("org.mockito:mockito-core:3.8.0")
+    testImplementation("org.mockito:mockito-inline:3.8.0")
 
 }
 
