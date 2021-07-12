@@ -11,8 +11,8 @@ datasources:
 
 api:
   consulta:
-    itau: http://localhost:9091
-    bcb: http://localhost:8082
+    itau: ${API_ITAU:http://localhost:9091}
+    bcb: ${API_BCB:http://localhost:8082}
 
 
 jpa.default.properties.hibernate.hbm2ddl.auto: update

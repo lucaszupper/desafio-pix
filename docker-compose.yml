@@ -19,6 +19,17 @@ services:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: keymanager
           POSTGRES_HOST: postgres
+
+    keymanager-grpc:
+      image: 'lucas/keymanager-grpc'
+      ports:
+      - 50051:50051
+      environment:
+        JDBC_URL: jdbc:postgresql://postgres:5432/keymanager
+        API_ITAU: http://erp-itau:9091
+        API_BCB: http://bcb:8082
+      depends_on:
+        - postgres
  
 volumes:
     postgres-volume:
