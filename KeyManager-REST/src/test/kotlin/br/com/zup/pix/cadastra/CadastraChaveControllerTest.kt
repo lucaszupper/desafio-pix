@@ -1,9 +1,10 @@
-package br.com.zup.pix
+package br.com.zup.pix.cadastra
 
 import br.com.zup.grpc.KeyManagerGrpcFactory
 import br.com.zup.grpc.TipoDeChave
 import br.com.zup.grpc.TipoDeConta
-import br.com.zup.pix.cadastra.ChavePixDto
+import br.com.zup.pix.ChavePixResponse
+import br.com.zup.pix.KeyManagerCadastraGrpcServiceGrpc
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
